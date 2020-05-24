@@ -1,12 +1,12 @@
-package company.organization;
+package project.company.organization;
 
 import java.util.Date;
 import java.util.List;
 
-import company.Person;
-import helpDesk.Request;
-import helpDesk.Status;
-import helpDesk.StatusEnum;
+import project.company.Person;
+import project.helpDesk.Request;
+import project.helpDesk.Status;
+import project.helpDesk.StatusEnum;
 
 public class Employee extends Person {
 	public Manager Manager;

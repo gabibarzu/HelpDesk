@@ -1,41 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="helpDeskProcess" name="Help Desk" isExecutable="true">
-    <userTask id="createRequest" name="Creeare cerere"></userTask>
-    <userTask id="analyzeRequest" name="Analizare cerere"></userTask>
+    <userTask id="createRequest" name="Creeare cerere">
+      <extensionElements>
+        <activiti:formProperty id="FirstName" name="Prenume" type="string" variable="FirstName" required="true"></activiti:formProperty>
+        <activiti:formProperty id="LastName" name="Nume" type="string" variable="LastName" required="true"></activiti:formProperty>
+        <activiti:formProperty id="TextMessage" name="Problema" type="string" variable="TextMessage" required="true"></activiti:formProperty>
+        <activiti:formProperty id="email" name="E-mail" variable="email" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="analyzeRequest" name="Analizare cerere">
+      <extensionElements>
+        <activiti:formProperty id="isApprovelNeeded" name="Nevoie aprobare" type="boolean" variable="isApprovelNeeded" default="false">
+          <activiti:value id="true" name="Need approvel"></activiti:value>
+          <activiti:value id="false" name="Without apoprovel"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="requestId" name="IdRequest" type="string"></activiti:formProperty>
+        <activiti:formProperty id="itGuyAssigned" name="IT Guy assigned" variable="itGuyAssigned"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow2" sourceRef="createRequest" targetRef="analyzeRequest"></sequenceFlow>
-    <exclusiveGateway id="needManagerApprove" name="Nevoie aprobare manager" default="approveNeedNo"></exclusiveGateway>
+    <exclusiveGateway id="needManagerApprove" name="Nevoie aprobare manager"></exclusiveGateway>
     <sequenceFlow id="flow3" sourceRef="analyzeRequest" targetRef="needManagerApprove"></sequenceFlow>
     <manualTask id="resolveRequest" name="Solutionare cerere"></manualTask>
-    <sequenceFlow id="approveNeedNo" name="Fara aprobare manager" sourceRef="needManagerApprove" targetRef="resolveRequest"></sequenceFlow>
-    <userTask id="managerAnaliyzeRequest" name="Avizare cerere"></userTask>
-    <sequenceFlow id="approveNeedYess" name="Cu aprobare Manager" sourceRef="needManagerApprove" targetRef="managerAnaliyzeRequest"></sequenceFlow>
-    <exclusiveGateway id="approved" name="Aprobare" default="approvedYes"></exclusiveGateway>
+    <sequenceFlow id="approveNeedNo" name="Fara aprobare manager" sourceRef="needManagerApprove" targetRef="resolveRequest">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[$(isApprovelNeeded == 'false')]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="managerAnaliyzeRequest" name="Avizare cerere">
+      <extensionElements>
+        <activiti:formProperty id="approve" name="Approve" type="boolean" variable="approve" default="false">
+          <activiti:value id="true" name="Approve"></activiti:value>
+          <activiti:value id="fasle" name="Reject"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="approveNeedYess" name="Cu aprobare Manager" sourceRef="needManagerApprove" targetRef="managerAnaliyzeRequest">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[$(isApprovelNeeded == 'true')]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="approved" name="Aprobare"></exclusiveGateway>
     <sequenceFlow id="flow6" sourceRef="managerAnaliyzeRequest" targetRef="approved"></sequenceFlow>
     <userTask id="approveRequest" name="Aprobare cerere"></userTask>
-    <sequenceFlow id="approvedYes" name="Cerere aprobata" sourceRef="approved" targetRef="approveRequest"></sequenceFlow>
-    <sequenceFlow id="approvedNo" name="Cerere respinsa" sourceRef="approved" targetRef="createRequest"></sequenceFlow>
+    <sequenceFlow id="approvedYes" name="Cerere aprobata" sourceRef="approved" targetRef="approveRequest">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[$(approve == 'true')]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="approvedNo" name="Cerere respinsa" sourceRef="approved" targetRef="createRequest">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[$(approve == 'false')]]></conditionExpression>
+    </sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="approveRequest" targetRef="resolveRequest"></sequenceFlow>
-    <manualTask id="verifyRequestSolution" name="Verificare rezolvare"></manualTask>
+    <userTask id="verifyRequestSolution" name="Verificare rezolvare">
+      <extensionElements>
+        <activiti:formProperty id="isRezolved" name="Problema rezolvata" type="boolean" variable="isRezolved">
+          <activiti:value id="true" name="Resolvata"></activiti:value>
+          <activiti:value id="false" name="Nerezolvata"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow10" sourceRef="resolveRequest" targetRef="verifyRequestSolution"></sequenceFlow>
-    <exclusiveGateway id="resolve" name="Problema rezolvata" default="resolvedYes"></exclusiveGateway>
+    <exclusiveGateway id="resolve" name="Problema rezolvata"></exclusiveGateway>
     <sequenceFlow id="flow11" sourceRef="verifyRequestSolution" targetRef="resolve"></sequenceFlow>
     <manualTask id="addNewInfoRequest" name="Adauga noi informatii"></manualTask>
-    <sequenceFlow id="resolvedNo" name="Problema nerezolvata" sourceRef="resolve" targetRef="addNewInfoRequest"></sequenceFlow>
+    <sequenceFlow id="resolvedNo" name="Problema nerezolvata" sourceRef="resolve" targetRef="addNewInfoRequest">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[$(isRezolved == 'false')]]></conditionExpression>
+    </sequenceFlow>
     <sequenceFlow id="flow14" sourceRef="addNewInfoRequest" targetRef="analyzeRequest"></sequenceFlow>
     <endEvent id="close" name="Solutionare problema"></endEvent>
     <boundaryEvent id="ErrorNoDevice" name="Exception handling: user nu are acces la echipament" attachedToRef="analyzeRequest">
       <errorEventDefinition></errorEventDefinition>
     </boundaryEvent>
-    <userTask id="createRequestForUser" name="Creeare cere pentru angajat"></userTask>
+    <userTask id="createRequestForUser" name="Creeare cere pentru angajat" activiti:assignee="Manager"></userTask>
     <sequenceFlow id="flow15" sourceRef="ErrorNoDevice" targetRef="createRequestForUser"></sequenceFlow>
     <sequenceFlow id="flow16" sourceRef="createRequestForUser" targetRef="managerAnaliyzeRequest"></sequenceFlow>
     <startEvent id="start" name="Start"></startEvent>
     <sequenceFlow id="flow17" sourceRef="start" targetRef="createRequest"></sequenceFlow>
-    <userTask id="closeRequest" name="Inchide caz"></userTask>
-    <sequenceFlow id="resolvedYes" name="Problema rezolvata" sourceRef="resolve" targetRef="closeRequest"></sequenceFlow>
-    <sequenceFlow id="flow19" sourceRef="closeRequest" targetRef="closeRequest"></sequenceFlow>
-    <sequenceFlow id="flow20" sourceRef="closeRequest" targetRef="close"></sequenceFlow>
+    <serviceTask id="closeRequest" name="Inchidere caz" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${email}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="from">
+          <activiti:string><![CDATA[company@localhost]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[Cazul numarul ${requestId}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[<html>
+	<body>
+		<h1>Cazul nr ${requestId} a fost inchis de catre ${itGuyAssigned}</h1>
+	</body>
+</html>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow18" sourceRef="resolve" targetRef="closeRequest">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[$(isRezolved == 'true')]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow19" sourceRef="closeRequest" targetRef="close"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_helpDeskProcess">
     <bpmndi:BPMNPlane bpmnElement="helpDeskProcess" id="BPMNPlane_helpDeskProcess">
@@ -46,7 +106,7 @@
         <omgdc:Bounds height="55.0" width="105.0" x="240.0" y="341.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="ErrorNoDevice" id="BPMNShape_ErrorNoDevice">
-        <omgdc:Bounds height="30.0" width="30.0" x="278.0" y="385.0"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="278.0" y="388.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="needManagerApprove" id="BPMNShape_needManagerApprove">
         <omgdc:Bounds height="40.0" width="40.0" x="472.0" y="348.0"></omgdc:Bounds>
@@ -76,7 +136,7 @@
         <omgdc:Bounds height="35.0" width="35.0" x="1150.0" y="351.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="createRequestForUser" id="BPMNShape_createRequestForUser">
-        <omgdc:Bounds height="55.0" width="126.0" x="230.0" y="471.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="141.0" x="222.0" y="471.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
         <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="170.0"></omgdc:Bounds>
@@ -153,29 +213,22 @@
         <omgdi:waypoint x="292.0" y="341.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
-        <omgdi:waypoint x="293.0" y="415.0"></omgdi:waypoint>
-        <omgdi:waypoint x="293.0" y="471.0"></omgdi:waypoint>
+        <omgdi:waypoint x="293.0" y="418.0"></omgdi:waypoint>
+        <omgdi:waypoint x="292.0" y="471.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
-        <omgdi:waypoint x="356.0" y="498.0"></omgdi:waypoint>
+        <omgdi:waypoint x="363.0" y="498.0"></omgdi:waypoint>
         <omgdi:waypoint x="440.0" y="498.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
         <omgdi:waypoint x="65.0" y="187.0"></omgdi:waypoint>
         <omgdi:waypoint x="130.0" y="187.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="resolvedYes" id="BPMNEdge_resolvedYes">
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
         <omgdi:waypoint x="962.0" y="207.0"></omgdi:waypoint>
         <omgdi:waypoint x="962.0" y="341.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="92.0" x="967.0" y="213.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
-        <omgdi:waypoint x="1015.0" y="368.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1015.0" y="368.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
         <omgdi:waypoint x="1015.0" y="368.0"></omgdi:waypoint>
         <omgdi:waypoint x="1150.0" y="368.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>

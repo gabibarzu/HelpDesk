@@ -1,14 +1,14 @@
-package company.organization;
+package project.company.organization;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import company.Person;
-import company.support.ITGuy;
-import helpDesk.Request;
-import helpDesk.Status;
-import helpDesk.StatusEnum;
+import project.company.Person;
+import project.company.support.ITGuy;
+import project.helpDesk.Request;
+import project.helpDesk.Status;
+import project.helpDesk.StatusEnum;
 
 public class Manager extends Person {
 	public List<Employee> Employees;

@@ -1,11 +1,11 @@
-package company.support;
+package project.company.support;
 
 import java.util.Date;
 
-import company.Person;
-import helpDesk.Request;
-import helpDesk.Status;
-import helpDesk.StatusEnum;
+import project.company.Person;
+import project.helpDesk.Request;
+import project.helpDesk.Status;
+import project.helpDesk.StatusEnum;
 
 public class ITGuy extends Person {
 

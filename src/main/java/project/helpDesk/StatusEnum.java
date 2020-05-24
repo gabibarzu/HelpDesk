@@ -1,4 +1,4 @@
-package helpDesk;
+package project.helpDesk;
 
 public enum StatusEnum {
 	NEW("New"), 

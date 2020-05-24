@@ -1,9 +1,9 @@
-package helpDesk;
+package project.helpDesk;
 
 import java.util.Date;
 import java.util.UUID;
 
-import company.support.ITGuy;
+import project.company.support.ITGuy;
 
 public class Status {
 	public UUID Id;

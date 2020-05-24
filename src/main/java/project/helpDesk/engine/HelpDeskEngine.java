@@ -1,8 +1,8 @@
-package helpDesk.engine;
+package project.helpDesk.engine;
 
-import helpDesk.Request;
-import helpDesk.Status;
-import helpDesk.StatusEnum;
+import project.helpDesk.Request;
+import project.helpDesk.Status;
+import project.helpDesk.StatusEnum;
 
 public class HelpDeskEngine {
 	public void AnalyzeRequest(Request request) {

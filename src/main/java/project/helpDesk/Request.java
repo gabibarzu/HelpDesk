@@ -1,17 +1,18 @@
-package helpDesk;
+package project.helpDesk;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import company.organization.*;
+import project.company.organization.*;
 
 public class Request {
 	public UUID Id;
 	public Employee CreatedBy;
 	public Manager Manager;
 	public Date CreatedTime;
+	public String TextMessage;
 	public List<Status> Statuses;
 
 	@SuppressWarnings("serial")
@@ -20,6 +21,21 @@ public class Request {
 		this.CreatedBy = employee;
 		this.Manager = employee.Manager;
 		this.CreatedTime = new Date();
+		this.TextMessage = "It's broken";
+		this.Statuses = new ArrayList<Status>() {
+			{
+				new Status();
+			}
+		};
+	}
+
+	@SuppressWarnings("serial")
+	public Request(Employee employee, String message) {
+		this.Id = UUID.randomUUID();
+		this.CreatedBy = employee;
+		this.Manager = employee.Manager;
+		this.CreatedTime = new Date();
+		this.TextMessage = message;
 		this.Statuses = new ArrayList<Status>() {
 			{
 				new Status();
