@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="helpDeskProcess" name="Help Desk" isExecutable="true">
+    <userTask id="createRequest" name="Creeare cerere"></userTask>
+    <userTask id="analyzeRequest" name="Analizare cerere"></userTask>
+    <sequenceFlow id="flow2" sourceRef="createRequest" targetRef="analyzeRequest"></sequenceFlow>
+    <exclusiveGateway id="needManagerApprove" name="Nevoie aprobare manager" default="approveNeedNo"></exclusiveGateway>
+    <sequenceFlow id="flow3" sourceRef="analyzeRequest" targetRef="needManagerApprove"></sequenceFlow>
+    <manualTask id="resolveRequest" name="Solutionare cerere"></manualTask>
+    <sequenceFlow id="approveNeedNo" name="Fara aprobare manager" sourceRef="needManagerApprove" targetRef="resolveRequest"></sequenceFlow>
+    <userTask id="managerAnaliyzeRequest" name="Avizare cerere"></userTask>
+    <sequenceFlow id="approveNeedYess" name="Cu aprobare Manager" sourceRef="needManagerApprove" targetRef="managerAnaliyzeRequest"></sequenceFlow>
+    <exclusiveGateway id="approved" name="Aprobare" default="approvedYes"></exclusiveGateway>
+    <sequenceFlow id="flow6" sourceRef="managerAnaliyzeRequest" targetRef="approved"></sequenceFlow>
+    <userTask id="approveRequest" name="Aprobare cerere"></userTask>
+    <sequenceFlow id="approvedYes" name="Cerere aprobata" sourceRef="approved" targetRef="approveRequest"></sequenceFlow>
+    <sequenceFlow id="approvedNo" name="Cerere respinsa" sourceRef="approved" targetRef="createRequest"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="approveRequest" targetRef="resolveRequest"></sequenceFlow>
+    <manualTask id="verifyRequestSolution" name="Verificare rezolvare"></manualTask>
+    <sequenceFlow id="flow10" sourceRef="resolveRequest" targetRef="verifyRequestSolution"></sequenceFlow>
+    <exclusiveGateway id="resolve" name="Problema rezolvata" default="resolvedYes"></exclusiveGateway>
+    <sequenceFlow id="flow11" sourceRef="verifyRequestSolution" targetRef="resolve"></sequenceFlow>
+    <manualTask id="addNewInfoRequest" name="Adauga noi informatii"></manualTask>
+    <sequenceFlow id="resolvedNo" name="Problema nerezolvata" sourceRef="resolve" targetRef="addNewInfoRequest"></sequenceFlow>
+    <sequenceFlow id="flow14" sourceRef="addNewInfoRequest" targetRef="analyzeRequest"></sequenceFlow>
+    <endEvent id="close" name="Solutionare problema"></endEvent>
+    <boundaryEvent id="ErrorNoDevice" name="Exception handling: user nu are acces la echipament" attachedToRef="analyzeRequest">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <userTask id="createRequestForUser" name="Creeare cere pentru angajat"></userTask>
+    <sequenceFlow id="flow15" sourceRef="ErrorNoDevice" targetRef="createRequestForUser"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="createRequestForUser" targetRef="managerAnaliyzeRequest"></sequenceFlow>
+    <startEvent id="start" name="Start"></startEvent>
+    <sequenceFlow id="flow17" sourceRef="start" targetRef="createRequest"></sequenceFlow>
+    <userTask id="closeRequest" name="Inchide caz"></userTask>
+    <sequenceFlow id="resolvedYes" name="Problema rezolvata" sourceRef="resolve" targetRef="closeRequest"></sequenceFlow>
+    <sequenceFlow id="flow19" sourceRef="closeRequest" targetRef="closeRequest"></sequenceFlow>
+    <sequenceFlow id="flow20" sourceRef="closeRequest" targetRef="close"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_helpDeskProcess">
+    <bpmndi:BPMNPlane bpmnElement="helpDeskProcess" id="BPMNPlane_helpDeskProcess">
+      <bpmndi:BPMNShape bpmnElement="createRequest" id="BPMNShape_createRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="130.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="analyzeRequest" id="BPMNShape_analyzeRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="240.0" y="341.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ErrorNoDevice" id="BPMNShape_ErrorNoDevice">
+        <omgdc:Bounds height="30.0" width="30.0" x="278.0" y="385.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="needManagerApprove" id="BPMNShape_needManagerApprove">
+        <omgdc:Bounds height="40.0" width="40.0" x="472.0" y="348.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="resolveRequest" id="BPMNShape_resolveRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="710.0" y="341.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="managerAnaliyzeRequest" id="BPMNShape_managerAnaliyzeRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="440.0" y="471.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approved" id="BPMNShape_approved">
+        <omgdc:Bounds height="40.0" width="40.0" x="582.0" y="478.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approveRequest" id="BPMNShape_approveRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="710.0" y="471.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="verifyRequestSolution" id="BPMNShape_verifyRequestSolution">
+        <omgdc:Bounds height="55.0" width="105.0" x="710.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="resolve" id="BPMNShape_resolve">
+        <omgdc:Bounds height="40.0" width="40.0" x="942.0" y="167.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="addNewInfoRequest" id="BPMNShape_addNewInfoRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="910.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="close" id="BPMNShape_close">
+        <omgdc:Bounds height="35.0" width="35.0" x="1150.0" y="351.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="createRequestForUser" id="BPMNShape_createRequestForUser">
+        <omgdc:Bounds height="55.0" width="126.0" x="230.0" y="471.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="closeRequest" id="BPMNShape_closeRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="910.0" y="341.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="235.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="292.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="292.0" y="341.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="345.0" y="368.0"></omgdi:waypoint>
+        <omgdi:waypoint x="472.0" y="368.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="approveNeedNo" id="BPMNEdge_approveNeedNo">
+        <omgdi:waypoint x="512.0" y="368.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="368.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="552.0" y="327.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="approveNeedYess" id="BPMNEdge_approveNeedYess">
+        <omgdi:waypoint x="492.0" y="388.0"></omgdi:waypoint>
+        <omgdi:waypoint x="492.0" y="471.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="497.0" y="414.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="545.0" y="498.0"></omgdi:waypoint>
+        <omgdi:waypoint x="582.0" y="498.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="approvedYes" id="BPMNEdge_approvedYes">
+        <omgdi:waypoint x="622.0" y="498.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="498.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="79.0" x="622.0" y="498.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="approvedNo" id="BPMNEdge_approvedNo">
+        <omgdi:waypoint x="602.0" y="518.0"></omgdi:waypoint>
+        <omgdi:waypoint x="602.0" y="561.0"></omgdi:waypoint>
+        <omgdi:waypoint x="182.0" y="561.0"></omgdi:waypoint>
+        <omgdi:waypoint x="182.0" y="215.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="78.0" x="455.0" y="559.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="762.0" y="471.0"></omgdi:waypoint>
+        <omgdi:waypoint x="762.0" y="396.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="762.0" y="341.0"></omgdi:waypoint>
+        <omgdi:waypoint x="762.0" y="215.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="815.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="942.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="resolvedNo" id="BPMNEdge_resolvedNo">
+        <omgdi:waypoint x="962.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="962.0" y="105.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="970.0" y="127.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="910.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="348.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="348.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="292.0" y="341.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="293.0" y="415.0"></omgdi:waypoint>
+        <omgdi:waypoint x="293.0" y="471.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="356.0" y="498.0"></omgdi:waypoint>
+        <omgdi:waypoint x="440.0" y="498.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="65.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="resolvedYes" id="BPMNEdge_resolvedYes">
+        <omgdi:waypoint x="962.0" y="207.0"></omgdi:waypoint>
+        <omgdi:waypoint x="962.0" y="341.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="92.0" x="967.0" y="213.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="1015.0" y="368.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1015.0" y="368.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="1015.0" y="368.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1150.0" y="368.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
